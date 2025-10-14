@@ -1,0 +1,6 @@
+- Understand techniques for squashing an ASP.NET Core web app security bug
+- Discover different types of injection attacks and understand how you can prevent this vulnerability from being exploited
+- Fix security issues in code relating to broken authentication and authorization
+- Eliminate the risks of sensitive data exposure by getting up to speed with numerous protection techniques
+- Prevent security misconfiguration by enabling ASP.NET Core web application security features
+- Explore other ASP.NET web application vulnerabilities and secure coding best practices
