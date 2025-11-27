@@ -1,0 +1,45 @@
+rules:
+  - id: csharp-process-shell-command-injection
+    languages: [csharp]
+    severity: ERROR
+    message: Potential command injection via shell when building process command from user input. Avoid passing untrusted input to shell (cmd.exe, /c) or sanitize/validate strictly. Prefer direct APIs over shell commands.
+    metadata:
+      cwe: CWE-78
+      references:
+        - https://learn.microsoft.com/dotnet/standard/secure-coding-guidelines/choose-a-safe-implementation
+        - https://owasp.org/www-community/attacks/Command_Injection
+      category: security
+    patterns:
+      - pattern-either:
+          - pattern: |
+              new Process()
+              {
+                StartInfo = new ProcessStartInfo
+                {
+                  FileName = "cmd",
+                  Arguments = $...UNTRUSTED,
+                  ...
+                }
+              };
+          - pattern: |
+              var $p = new Process();
+              ...
+              $p.StartInfo.FileName = "cmd";
+              ...
+              $p.StartInfo.Arguments = $UNTRUSTED;
+              ...
+          - pattern: |
+              var $psi = new ProcessStartInfo("cmd", $UNTRUSTED);
+          - pattern: |
+              $p.StartInfo.FileName = "bash";
+              ...
+              $p.StartInfo.Arguments = $UNTRUSTED;
+      - pattern-inside: |
+          class $C
+          {
+            ...
+          }
+      - metavariable-regex:
+          metavariable: UNTRUSTED
+          regex: ".*[+]|[$][a-zA-Z_][a-zA-Z0-9_]*|string\.Format|InterpolatedStringHandler|[$]{.*}"
+    fix: "// Validate and sanitize input strictly; avoid shell. Use File.Copy or other safe APIs instead."

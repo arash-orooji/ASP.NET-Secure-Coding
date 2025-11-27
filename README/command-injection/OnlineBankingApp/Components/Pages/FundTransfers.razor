@@ -1,0 +1,294 @@
+@page "/fund-transfers"
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Text.Encodings.Web
+@using System.ComponentModel.DataAnnotations
+@using System.Linq
+
+@inject IDbContextFactory<OnlineBankingAppContext> ContextFactory
+@inject ILogger<FundTransfers> Logger
+@inject HtmlEncoder HtmlEncoder
+
+<PageTitle>Fund transfers</PageTitle>
+
+<h1 class="h2">Fund transfers</h1>
+<p class="text-muted mb-4">Track historic transfers and record new requests. Destination and source accounts must always differ.</p>
+
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <div class="alert alert-success" role="status">@statusMessage</div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Record a transfer</h2>
+                <EditForm EditContext="@editContext" OnValidSubmit="SubmitAsync">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label class="form-label" for="accountFrom">Account from</label>
+                        <InputSelect id="accountFrom" class="form-select" @bind-Value="formModel.AccountFrom">
+                            <option value="">Select an account</option>
+                            @foreach (var account in accountOptions)
+                            {
+                                <option value="@account.ID">@account.Name (@account.AccountType) - @account.Balance.ToString("C")</option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="accountTo">Account to</label>
+                        <InputSelect id="accountTo" class="form-select" @bind-Value="formModel.AccountTo">
+                            <option value="">Select an account</option>
+                            @foreach (var account in accountOptions)
+                            {
+                                <option value="@account.ID">@account.Name (@account.AccountType) - @account.Balance.ToString("C")</option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="amount">Amount</label>
+                        <InputNumber id="amount" class="form-control" @bind-Value="formModel.Amount" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="transactionDate">Transaction date</label>
+                        <InputDate id="transactionDate" class="form-control" @bind-Value="formModel.TransactionDate" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="note">Note</label>
+                        <InputTextArea id="note" class="form-control" rows="3" @bind-Value="formModel.Note" maxlength="60" />
+                        <div class="form-text">Optional memo (max 60 characters).</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" type="submit">Record transfer</button>
+                        <button class="btn btn-secondary" type="button" @onclick="ResetForm">Reset</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Transfer history</h2>
+                @if (isLoading)
+                {
+                    <p>Loading transfers…</p>
+                }
+                else if (transfers.Count == 0)
+                {
+                    <p class="text-muted">No transfers recorded yet.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Source</th>
+                                    <th scope="col">Destination</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var transfer in transfers)
+                            {
+                                <tr>
+                                    <td>@transfer.TransactionDate.ToString("d")</td>
+                                    <td>@accountName(transfer.AccountFrom)</td>
+                                    <td>@accountName(transfer.AccountTo)</td>
+                                    <td>@transfer.Amount.ToString("C")</td>
+                                    <td>@HtmlEncoder.Encode(transfer.Note ?? string.Empty)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Account> accountOptions = new();
+    private List<FundTransfer> transfers = new();
+    private FundTransferFormModel formModel = CreateDefaultForm();
+    private EditContext editContext = default!;
+    private bool isLoading = true;
+    private string? statusMessage;
+    private string? errorMessage;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(formModel);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private static FundTransferFormModel CreateDefaultForm()
+        => new()
+        {
+            TransactionDate = DateTime.Today,
+            CustomerId = 1
+        };
+
+    private async Task LoadAsync()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            await using var context = await ContextFactory.CreateDbContextAsync();
+            accountOptions = await context.Account.AsNoTracking().OrderBy(a => a.Name).ToListAsync();
+            transfers = await context.FundTransfer.AsNoTracking().OrderByDescending(f => f.TransactionDate).ToListAsync();
+            EnsureAccountDefaults();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load fund transfer data");
+            errorMessage = "Unable to load transfers.";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task SubmitAsync()
+    {
+        errorMessage = null;
+        statusMessage = null;
+
+        if (formModel.AccountFrom is null || formModel.AccountTo is null)
+        {
+            errorMessage = "Select both the source and destination accounts.";
+            return;
+        }
+
+        if (formModel.CustomerId is null || formModel.CustomerId <= 0)
+        {
+            errorMessage = "Select a valid customer.";
+            return;
+        }
+
+        if (formModel.AccountFrom == formModel.AccountTo)
+        {
+            errorMessage = "Source and destination must differ.";
+            return;
+        }
+
+        if (formModel.Amount is null || formModel.Amount <= 0)
+        {
+            errorMessage = "Enter an amount greater than zero.";
+            return;
+        }
+
+        try
+        {
+            await using var context = await ContextFactory.CreateDbContextAsync();
+
+            var transfer = new FundTransfer
+            {
+                CustomerID = formModel.CustomerId.Value,
+                AccountFrom = formModel.AccountFrom.Value,
+                AccountTo = formModel.AccountTo.Value,
+                Amount = formModel.Amount!.Value,
+                TransactionDate = formModel.TransactionDate,
+                Note = formModel.Note ?? string.Empty
+            };
+
+            context.FundTransfer.Add(transfer);
+            await context.SaveChangesAsync();
+
+            statusMessage = "Transfer recorded.";
+            ResetForm();
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to store transfer");
+            errorMessage = "Recording the transfer failed. Please review the fields and try again.";
+        }
+    }
+
+    private void ResetForm()
+    {
+        formModel = CreateDefaultForm();
+        EnsureAccountDefaults();
+        editContext = new EditContext(formModel);
+    }
+
+    private void EnsureAccountDefaults()
+    {
+        if (accountOptions.Count == 0)
+        {
+            formModel.AccountFrom = null;
+            formModel.AccountTo = null;
+            return;
+        }
+
+        formModel.CustomerId ??= accountOptions.First().CustomerID;
+
+        formModel.AccountFrom ??= accountOptions.First().ID;
+
+        if (formModel.AccountTo is null || formModel.AccountTo == formModel.AccountFrom)
+        {
+            formModel.AccountTo = accountOptions.Skip(1).Select(a => (int?)a.ID).FirstOrDefault();
+
+            if (formModel.AccountTo is null)
+            {
+                formModel.AccountTo = formModel.AccountFrom;
+            }
+        }
+    }
+
+    private string accountName(int accountId)
+    {
+        var account = accountOptions.FirstOrDefault(a => a.ID == accountId);
+        return account is null ? "Unknown" : $"{account.Name} ({account.AccountType})";
+    }
+
+    private sealed class FundTransferFormModel
+    {
+        [Required]
+        public int? CustomerId { get; set; }
+
+        [Required]
+        public int? AccountFrom { get; set; }
+
+        [Required]
+        public int? AccountTo { get; set; }
+
+        [Required]
+        [Range(typeof(decimal), "0.01", "1000000000")]
+        public decimal? Amount { get; set; }
+
+        [Required]
+        public DateTime TransactionDate { get; set; }
+
+        [StringLength(60)]
+        public string? Note { get; set; }
+    }
+}

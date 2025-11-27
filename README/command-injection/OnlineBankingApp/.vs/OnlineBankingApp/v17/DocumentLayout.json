@@ -1,0 +1,154 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|c:\\asp.net-core-secure-coding-cookbook\\chapter02\\command-injection\\after\\onlinebankingapp\\.semgrep\\rules\\csharp-command-injection.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|solutionrelative:.semgrep\\rules\\csharp-command-injection.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{54F2E4E7-BA69-4987-A5D1-9F50C5177194}|..\\OnlineBankingApp.Tests\\OnlineBankingApp.Tests.csproj|c:\\asp.net-core-secure-coding-cookbook\\chapter02\\command-injection\\after\\onlinebankingapp.tests\\unsecurebackupservicetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{54F2E4E7-BA69-4987-A5D1-9F50C5177194}|..\\OnlineBankingApp.Tests\\OnlineBankingApp.Tests.csproj|c:\\asp.net-core-secure-coding-cookbook\\chapter02\\command-injection\\after\\onlinebankingapp.tests\\backupservicetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|c:\\asp.net-core-secure-coding-cookbook\\chapter02\\command-injection\\after\\onlinebankingapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|c:\\asp.net-core-secure-coding-cookbook\\chapter02\\command-injection\\after\\onlinebankingapp\\components\\pages\\backups.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|solutionrelative:components\\pages\\backups.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|c:\\asp.net-core-secure-coding-cookbook\\chapter02\\command-injection\\after\\onlinebankingapp\\services\\securebackupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|solutionrelative:services\\securebackupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|c:\\asp.net-core-secure-coding-cookbook\\chapter02\\command-injection\\after\\onlinebankingapp\\services\\unsecurebackupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|solutionrelative:services\\unsecurebackupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|c:\\asp.net-core-secure-coding-cookbook\\chapter02\\command-injection\\after\\onlinebankingapp\\components\\pages\\customers.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AAC94C58-F728-AA65-EC16-CF9230DCBB26}|OnlineBankingApp.csproj|solutionrelative:components\\pages\\customers.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "csharp-command-injection.yml",
+              "DocumentMoniker": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\.semgrep\\rules\\csharp-command-injection.yml",
+              "RelativeDocumentMoniker": ".semgrep\\rules\\csharp-command-injection.yml",
+              "ToolTip": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\.semgrep\\rules\\csharp-command-injection.yml",
+              "RelativeToolTip": ".semgrep\\rules\\csharp-command-injection.yml",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAABMAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2025-10-04T20:00:05.478Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UnsecureBackupServiceTests.cs",
+              "DocumentMoniker": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp.Tests\\UnsecureBackupServiceTests.cs",
+              "RelativeDocumentMoniker": "..\\OnlineBankingApp.Tests\\UnsecureBackupServiceTests.cs",
+              "ToolTip": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp.Tests\\UnsecureBackupServiceTests.cs",
+              "RelativeToolTip": "..\\OnlineBankingApp.Tests\\UnsecureBackupServiceTests.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-04T19:59:56.823Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "BackupServiceTests.cs",
+              "DocumentMoniker": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp.Tests\\BackupServiceTests.cs",
+              "RelativeDocumentMoniker": "..\\OnlineBankingApp.Tests\\BackupServiceTests.cs",
+              "ToolTip": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp.Tests\\BackupServiceTests.cs",
+              "RelativeToolTip": "..\\OnlineBankingApp.Tests\\BackupServiceTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-04T19:49:36.721Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAAADUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-04T19:45:38.05Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "UnsecureBackupService.cs",
+              "DocumentMoniker": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\Services\\UnsecureBackupService.cs",
+              "RelativeDocumentMoniker": "Services\\UnsecureBackupService.cs",
+              "ToolTip": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\Services\\UnsecureBackupService.cs",
+              "RelativeToolTip": "Services\\UnsecureBackupService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAABTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-04T19:44:38.563Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Backups.razor",
+              "DocumentMoniker": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\Components\\Pages\\Backups.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\Backups.razor",
+              "ToolTip": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\Components\\Pages\\Backups.razor",
+              "RelativeToolTip": "Components\\Pages\\Backups.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-04T19:42:56.192Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Customers.razor",
+              "DocumentMoniker": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\Components\\Pages\\Customers.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\Customers.razor",
+              "ToolTip": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\Components\\Pages\\Customers.razor",
+              "RelativeToolTip": "Components\\Pages\\Customers.razor",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAAAoAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-04T19:42:24.397Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "SecureBackupService.cs",
+              "DocumentMoniker": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\Services\\SecureBackupService.cs",
+              "RelativeDocumentMoniker": "Services\\SecureBackupService.cs",
+              "ToolTip": "C:\\ASP.NET-Core-Secure-Coding-Cookbook\\Chapter02\\command-injection\\after\\OnlineBankingApp\\Services\\SecureBackupService.cs",
+              "RelativeToolTip": "Services\\SecureBackupService.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-04T19:39:05.266Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

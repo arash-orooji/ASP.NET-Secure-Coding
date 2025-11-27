@@ -1,0 +1,125 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.page .sidebar {
+  width: 260px;
+  padding: 1.5rem 1rem;
+  background-color: #0f172a;
+  color: #fff;
+}
+
+.page .sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.page .sidebar .nav-link.active,
+.page .sidebar .nav-link:hover {
+  color: #fff;
+  background-color: #2563eb;
+}
+
+.page main {
+  flex: 1;
+  background-color: #f8fafc;
+  min-width: 0;
+}
+
+.page .top-row {
+  background: #fff;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.page .content {
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+@media (max-width: 992px) {
+  .page {
+    flex-direction: column;
+  }
+
+  .page .sidebar {
+    width: 100%;
+  }
+}

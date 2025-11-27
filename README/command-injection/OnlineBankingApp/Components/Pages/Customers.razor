@@ -1,0 +1,269 @@
+@page "/customers"
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.Linq
+
+@inject IDbContextFactory<OnlineBankingAppContext> ContextFactory
+@inject ILogger<Customers> Logger
+
+<PageTitle>Customers</PageTitle>
+
+<h1 class="h2">Customers</h1>
+<p class="text-muted mb-4">Create, update, and review customer records. Validation is enforced on both the client and the database.</p>
+
+@if (!string.IsNullOrWhiteSpace(statusMessage))
+{
+    <div class="alert alert-success" role="status">@statusMessage</div>
+}
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">@(isEditMode ? "Update customer" : "Create a new customer")</h2>
+                <EditForm EditContext="@editContext" OnValidSubmit="SaveAsync">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label class="form-label" for="firstName">First name</label>
+                        <InputText id="firstName" class="form-control" @bind-Value="formModel.FirstName" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="middleName">Middle name</label>
+                        <InputText id="middleName" class="form-control" @bind-Value="formModel.MiddleName" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="lastName">Last name</label>
+                        <InputText id="lastName" class="form-control" @bind-Value="formModel.LastName" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="dateOfBirth">Date of birth</label>
+                        <InputDate @bind-Value="formModel.DateOfBirth" id="dateOfBirth" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Email address</label>
+                        <InputText id="email" class="form-control" @bind-Value="formModel.Email" inputmode="email" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="phone">Phone number</label>
+                        <InputText id="phone" class="form-control" @bind-Value="formModel.Phone" inputmode="tel" />
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" type="submit">@(isEditMode ? "Save changes" : "Create customer")</button>
+                        <button type="button" class="btn btn-secondary" @onclick="ResetForm">Cancel</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Existing customers</h2>
+                @if (isLoading)
+                {
+                    <p>Loading customers…</p>
+                }
+                else if (customers.Count == 0)
+                {
+                    <p class="text-muted">No customer records are available yet.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Date of birth</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col" class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var customer in customers)
+                            {
+                                <tr>
+                                    <td>@customer.FirstName @customer.MiddleName @customer.LastName</td>
+                                    <td>@customer.DateOfBirth.ToString("d")</td>
+                                    <td>@customer.Email</td>
+                                    <td>@customer.Phone</td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-primary me-2" type="button" @onclick="() => BeginEdit(customer)">Edit</button>
+                                        <button class="btn btn-sm btn-outline-danger" type="button" @onclick="() => DeleteCustomerAsync(customer.ID)">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Customer> customers = new();
+    private Customer formModel = CreateEmptyCustomer();
+    private EditContext editContext = default!;
+    private bool isEditMode;
+    private bool isLoading = true;
+    private string? statusMessage;
+    private string? errorMessage;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(formModel);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCustomersAsync();
+    }
+
+    private static Customer CreateEmptyCustomer()
+        => new()
+        {
+            DateOfBirth = DateTime.Today.AddYears(-21),
+            Accounts = new List<Account>(),
+        };
+
+    private async Task LoadCustomersAsync()
+    {
+        isLoading = true;
+        try
+        {
+            await using var context = await ContextFactory.CreateDbContextAsync();
+            customers = await context.Customer
+                .AsNoTracking()
+                .OrderBy(c => c.LastName)
+                .ThenBy(c => c.FirstName)
+                .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load customers");
+            errorMessage = "Unable to load customer records. Please try again.";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        errorMessage = null;
+        statusMessage = null;
+
+        try
+        {
+            await using var context = await ContextFactory.CreateDbContextAsync();
+
+            if (isEditMode)
+            {
+                var existing = await context.Customer.FirstOrDefaultAsync(c => c.ID == formModel.ID);
+                if (existing is null)
+                {
+                    errorMessage = "The customer no longer exists.";
+                    await LoadCustomersAsync();
+                    return;
+                }
+
+                existing.FirstName = formModel.FirstName;
+                existing.MiddleName = formModel.MiddleName;
+                existing.LastName = formModel.LastName;
+                existing.DateOfBirth = formModel.DateOfBirth;
+                existing.Email = formModel.Email;
+                existing.Phone = formModel.Phone;
+
+                await context.SaveChangesAsync();
+                statusMessage = "Customer updated successfully.";
+            }
+            else
+            {
+                context.Customer.Add(formModel);
+                await context.SaveChangesAsync();
+                statusMessage = "Customer created successfully.";
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unable to persist customer information");
+            errorMessage = "We couldn't save the customer record. Review the data and try again.";
+            return;
+        }
+
+        ResetForm();
+        await LoadCustomersAsync();
+    }
+
+    private void BeginEdit(Customer customer)
+    {
+        isEditMode = true;
+        errorMessage = null;
+        statusMessage = null;
+
+        formModel = new Customer
+        {
+            ID = customer.ID,
+            FirstName = customer.FirstName,
+            MiddleName = customer.MiddleName,
+            LastName = customer.LastName,
+            DateOfBirth = customer.DateOfBirth,
+            Email = customer.Email,
+            Phone = customer.Phone,
+            Accounts = customer.Accounts ?? new List<Account>()
+        };
+
+        editContext = new EditContext(formModel);
+    }
+
+    private void ResetForm()
+    {
+        isEditMode = false;
+        formModel = CreateEmptyCustomer();
+        editContext = new EditContext(formModel);
+    }
+
+    private async Task DeleteCustomerAsync(int id)
+    {
+        errorMessage = null;
+        statusMessage = null;
+
+        try
+        {
+            await using var context = await ContextFactory.CreateDbContextAsync();
+            var customer = await context.Customer.Include(c => c.Accounts).FirstOrDefaultAsync(c => c.ID == id);
+
+            if (customer is null)
+            {
+                statusMessage = "The customer had already been removed.";
+                return;
+            }
+
+            context.Customer.Remove(customer);
+            await context.SaveChangesAsync();
+            statusMessage = "Customer removed.";
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to delete customer with ID {CustomerId}", id);
+            errorMessage = "Deletion failed. Check logs for more details.";
+        }
+
+        ResetForm();
+        await LoadCustomersAsync();
+    }
+}

@@ -1,0 +1,202 @@
+@page "/backups"
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using System.ComponentModel.DataAnnotations
+@using System.Linq
+
+@inject IDbContextFactory<OnlineBankingAppContext> ContextFactory
+@inject UnsecureBackupService BackupService
+@inject ILogger<Backups> Logger
+
+<PageTitle>Backups</PageTitle>
+
+<h1 class="h2">Database backups</h1>
+<p class="text-muted mb-4">Trigger sanitized backup operations. Backup names accept alphanumeric characters only.</p>
+
+@if (!string.IsNullOrWhiteSpace(statusMessage))
+{
+    <div class="alert alert-success" role="status">@statusMessage</div>
+}
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Create backup</h2>
+                <EditForm EditContext="@editContext" OnValidSubmit="CreateAsync">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label class="form-label" for="backupName">Backup name</label>
+                        <InputText id="backupName" class="form-control" @bind-Value="formModel.Name" maxlength="15" />
+                        <div class="form-text">Allowed characters: A-Z, a-z, 0-9.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create backup</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">History</h2>
+                @if (isLoading)
+                {
+                    <p>Loading backups…</p>
+                }
+                else if (backups.Count == 0)
+                {
+                    <p class="text-muted">No backups found.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Created</th>
+                                    <th scope="col" class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var backup in backups)
+                            {
+                                <tr>
+                                    <td>@backup.Name</td>
+                                    <td>@backup.BackupDate.ToLocalTime().ToString("g")</td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteAsync(backup.ID)">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Backup> backups = new();
+    private BackupForm formModel = new();
+    private EditContext editContext = default!;
+    private bool isLoading = true;
+    private string? statusMessage;
+    private string? errorMessage;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(formModel);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            await using var context = await ContextFactory.CreateDbContextAsync();
+            backups = await context.Backup.AsNoTracking().OrderByDescending(b => b.BackupDate).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load backups");
+            errorMessage = "Unable to load backups.";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task CreateAsync()
+    {
+        errorMessage = null;
+        statusMessage = null;
+
+        try
+        {
+            await using var context = await ContextFactory.CreateDbContextAsync();
+
+            var entity = new Backup
+            {
+                Name = formModel.Name!,
+                BackupDate = DateTime.UtcNow
+            };
+
+            context.Backup.Add(entity);
+            await context.SaveChangesAsync();
+
+            await BackupService.BackupDB(formModel.Name!);
+            statusMessage = $"Backup '{formModel.Name}' created.";
+            ResetForm();
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to create backup");
+            errorMessage = "Backup creation failed. Ensure the name is unique and try again.";
+        }
+    }
+
+    private async Task DeleteAsync(int id)
+    {
+        errorMessage = null;
+        statusMessage = null;
+
+        try
+        {
+            await using var context = await ContextFactory.CreateDbContextAsync();
+            var entity = await context.Backup.FirstOrDefaultAsync(b => b.ID == id);
+            if (entity is null)
+            {
+                statusMessage = "Backup already removed.";
+                return;
+            }
+
+            context.Backup.Remove(entity);
+            await context.SaveChangesAsync();
+            statusMessage = $"Backup '{entity.Name}' deleted.";
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to delete backup {BackupId}", id);
+            errorMessage = "An error occurred while deleting the backup.";
+        }
+
+        await LoadAsync();
+    }
+
+    private void ResetForm()
+    {
+        formModel = new BackupForm();
+        editContext = new EditContext(formModel);
+    }
+
+    private sealed class BackupForm
+    {
+        [Required]
+        [StringLength(15, MinimumLength = 3)]
+        [RegularExpression("^[a-zA-Z0-9]*$", ErrorMessage = "Use only letters and numbers.")]
+        public string? Name { get; set; }
+    }
+}

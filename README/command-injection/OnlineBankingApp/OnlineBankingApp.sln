@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineBankingApp", "OnlineBankingApp.csproj", "{AAC94C58-F728-AA65-EC16-CF9230DCBB26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineBankingApp.Tests", "..\\OnlineBankingApp.Tests\\OnlineBankingApp.Tests.csproj", "{54F2E4E7-BA69-4987-A5D1-9F50C5177194}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AAC94C58-F728-AA65-EC16-CF9230DCBB26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAC94C58-F728-AA65-EC16-CF9230DCBB26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAC94C58-F728-AA65-EC16-CF9230DCBB26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAC94C58-F728-AA65-EC16-CF9230DCBB26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54F2E4E7-BA69-4987-A5D1-9F50C5177194}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54F2E4E7-BA69-4987-A5D1-9F50C5177194}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54F2E4E7-BA69-4987-A5D1-9F50C5177194}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54F2E4E7-BA69-4987-A5D1-9F50C5177194}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AF721E79-7FAA-4054-A36D-BA18A8220307}
+	EndGlobalSection
+EndGlobal

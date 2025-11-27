@@ -1,0 +1,41 @@
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+
+@page "/"
+
+<PageTitle>Dashboard</PageTitle>
+
+<div class="mb-4">
+    <h1 class="display-5">Welcome back!</h1>
+    <p class="lead">Manage customers, internal fund transfers, and securely stored backups all from one place.</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h2 class="h4">Customers</h2>
+                <p>Review customer profiles, update contact details, and manage account records.</p>
+                <NavLink href="/customers" class="btn btn-primary">Open customer workspace</NavLink>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h2 class="h4">Fund transfers</h2>
+                <p>Initiate and audit intra-bank transfers with guard rails that prevent command injection.</p>
+                <NavLink href="/fund-transfers" class="btn btn-primary">Review transfers</NavLink>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h2 class="h4">Backups</h2>
+                <p>Trigger sanitized backup jobs and monitor completion timestamps.</p>
+                <NavLink href="/backups" class="btn btn-primary">Manage backups</NavLink>
+            </div>
+        </div>
+    </div>
+</div>
